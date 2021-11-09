@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!--
+			https://github.com/fredblade
+	-->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>TP2 Intro Prog</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+		  crossorigin="anonymous">
+	<script type="text/javascript">
+	
+</script>
+</head>
+<body>
+	<div id="container">
+		<h1 class="display-1 text-center bg-dark text-light">Calendrier</h1>
+		<p id="calendar"></p>
+		<div id="calendrier" class="row"></div>
+		<h6 class="text-center pt-5">
+			Made by Alfred<br>
+		</h6>
+	</div>
+	<script type="text/javascript">
+		var year = 0;
+		var month = 0;
+
+		do {
+			month = parseInt(prompt("Month ?"));
+			if (!(month >= 1) || (month > 12)) {
+				alert(month + " is not a valid month!\nEnter a number between 1 and 12.");
+			}
+		} while (!(month >= 1) || (month > 12));
+
+		do {
+			year = parseInt(prompt("Year ?"));
+			if (!(year >= 0) || (year > 2022)) {
+				alert(year + " is not a valid year!\nEnter a number between 0 and 2022.");
+			}
+		} while (!(year >= 0) || (year > 2022));
+		
+		getCalendarHTML(month, year);
+		/*
+		* Returns the month in letters
+		*/
+		function monthInLetters(nummonth) {
+			switch (nummonth) {
+				case 1:
+					return "January";
+				case 2:
+					return "February";
+				case 3:
+					return "March";
+				case 4:
+					return "April";
+				case 5:
+					return "May";
+				case 6:
+					return "June";
+				case 7:
+					return "July";
+				case 8:
+					return "August";
+				case 9:
+					return "September";
+				case 10:
+					return "October";
+				case 11:
+					return "November";
+				case 12:
+					return "December";
+				default:
+					return "Error";
+			}
+		}
+		/*
+		* Calculates the number of days in the specified month.
+		*/
+		function getNbdays(month, year) {
+			switch (month) {
+				case 1:
+					return 31;
+				case 2:
+					if ( year / 4 == 1) {
+						return 29;
+					} else {
+						return 28;
+					}
+				case 3:
+					return 31;
+				case 4:
+					return 30;
+				case 5:
+					return 31;
+				case 6:
+					return 30;
+				case 7:
+					return 31;
+				case 8:
+					return 31;
+				case 9:
+					return 30;
+				case 10:
+					return 31;
+				case 11:
+					return 30;
+				case 12:
+					return 31;
+				default: 
+					return "Error";
+			}
+		}
+		/*
+			Returns the calendar table in html string
+		*/
+		function getCalendarHTML(month, year) {
+			var calendar = new Array();
+
+		var caseempty = firstDayOfWeek(month, year);
+		var nbWeeks = Math.ceil((caseempty + getNbdays(month, year)) / 7);
+
+		var i2 = 0;
+		week = 0;
+
+		var nbdays = 1;
+		for (week; week < nbWeeks; week++) {
+			calendar[week] = new Array();
+			for (var iX=0; iX < 7; iX++) {
+				while (i2 < caseempty) {
+					calendar[0][i2] = "empty";
+					i2++;
+					iX++;
+				}
+				if (nbdays <= getNbdays(month, year)) {
+					calendar[week][iX] = nbdays;
+					nbdays++;   
+				} else {
+					calendar[week][iX] = "empty";
+				}
+			}
+		}
+		var array = calendar;
+			var HTMLCode = "<table class='table table-bordered table-light table-striped caption-top text-center col-4 mx-auto'>";
+			HTMLCode += "<caption class='bg-dark text-light text-center font-weight-bold'>" + monthInLetters(month) + " " + year + "</caption>";
+			HTMLCode += "<thead class='thead-dark'><tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr> </thead>";
+			HTMLCode += "<tbody>";
+			for (var y = 0; y < array.length; y++) {
+				HTMLCode += "<tr>";
+				for (var x = 0; x < 7; x++) {
+					if (array[y][x] == "empty") {
+						HTMLCode += "<td class='empty'><span>" + " " +"</span></td>";
+					} else {
+						HTMLCode += "<td><span class='badge-pill badge-light'>" + array[y][x] +"</span></td>";
+					}
+				}
+				HTMLCode += "</tr>";
+			}
+			HTMLCode += "</tbody>";
+			HTMLCode += "</table>";
+			document.getElementById("calendar").innerHTML = HTMLCode;
+		}
+
+		/*
+			Calculates the position of the first day of the month
+		*/		
+		function firstDayOfWeek(month, year) {
+			return dayOfWeek(1, month, year);
+		}
+
+		/*
+			Finds the day of a specified date
+		*		0 -> Sunday
+		*		1 -> Monday
+		*		2 -> Tuesday
+		*		3 -> Wednesday
+		*		4 -> Thursday
+		*		5 -> Friday
+		*		6 -> Saturday
+		*/
+		function dayOfWeek(day, month, year) {
+			var m1 = parseInt(month);
+			var a1 = parseInt(year);
+			var f, ns, as;
+
+			if (m1 >= 3) {
+				m1 = m1 - 2;
+			} else {
+				m1 = m1 + 10;
+				a1 = year - 1;
+			}
+
+			day = parseInt(day);
+			ns = parseInt(a1.toString().substring(0, 2));
+			aS = a1.toString();
+			aS = aS.substring(aS.length - 2, aS.length);
+			aS = parseInt(aS);
+
+			f = day + aS + Math.trunc(aS / 4) - (2 * ns) + Math.trunc(ns / 4) + Math.trunc((26 * m1 - 2) / 10);
+			f = f % 7;
+			if (f < 0) {
+				f = f + 7;
+			}
+
+			return f;
+		}
+	</script>	
+</body>
+</html>
